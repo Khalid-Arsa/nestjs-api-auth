@@ -13,7 +13,7 @@ import { AuthController } from './auth.controller';
     PassportModule, 
     JwtModule.register({
       secret: 'SECRET', // put this value in env file to hide the jwt secret
-      signOptions: { expiresIn: '60s' }
+      signOptions: { expiresIn: '60s' },
     })
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
