@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthEntity } from './auth.entity';
 
 @Module({
   imports: [
@@ -14,7 +16,8 @@ import { AuthController } from './auth.controller';
     JwtModule.register({
       secret: 'SECRET', // put this value in env file to hide the jwt secret
       signOptions: { expiresIn: '60s' },
-    })
+    }),
+    TypeOrmModule.forFeature([AuthEntity])
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
