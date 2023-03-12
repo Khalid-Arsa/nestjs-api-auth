@@ -1,1 +1,0 @@
-{"version":3,"file":"user.data.js","sourceRoot":"","sources":["../../src/data/user.data.ts"],"names":[],"mappings":";;;AAEa,QAAA,QAAQ,GAAe;IAClC;QACE,EAAE,EAAE,CAAC;QACL,IAAI,EAAE,QAAQ;QACd,QAAQ,EAAE,QAAQ;QAClB,QAAQ,EAAE,UAAU;KACrB;IACD;QACE,EAAE,EAAE,CAAC;QACL,IAAI,EAAE,OAAO;QACb,QAAQ,EAAE,OAAO;QACjB,QAAQ,EAAE,OAAO;KAClB;CACF,CAAC"}

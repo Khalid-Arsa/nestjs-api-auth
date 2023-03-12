@@ -18,11 +18,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthEntity = void 0;
+exports.UserEntity = void 0;
 const typeorm_1 = require("typeorm");
 const class_validator_1 = require("class-validator");
 const argon2 = require("argon2");
-let AuthEntity = class AuthEntity {
+let UserEntity = class UserEntity {
     hashPassword() {
         return __awaiter(this, void 0, void 0, function* () {
             this.password = yield argon2.hash(this.password);
@@ -32,33 +32,41 @@ let AuthEntity = class AuthEntity {
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], AuthEntity.prototype, "id", void 0);
+], UserEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: false }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid name' }),
+    (0, class_validator_1.IsString)({ message: "Name must be a string" }),
     __metadata("design:type", String)
-], AuthEntity.prototype, "name", void 0);
+], UserEntity.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: false, unique: true }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid username' }),
+    (0, class_validator_1.IsString)({ message: "Username must be a string" }),
     __metadata("design:type", String)
-], AuthEntity.prototype, "username", void 0);
+], UserEntity.prototype, "username", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsEmail)(),
+    (0, typeorm_1.Column)({ nullable: false, unique: true }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid email' }),
+    (0, class_validator_1.IsEmail)({}, { message: 'Invalid email address' }),
+    (0, class_validator_1.IsString)({ message: "Email must be a string" }),
     __metadata("design:type", String)
-], AuthEntity.prototype, "email", void 0);
+], UserEntity.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: false }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid password' }),
+    (0, class_validator_1.IsString)({ message: "Password must be a string" }),
     __metadata("design:type", String)
-], AuthEntity.prototype, "password", void 0);
+], UserEntity.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.BeforeInsert)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], AuthEntity.prototype, "hashPassword", null);
-AuthEntity = __decorate([
+], UserEntity.prototype, "hashPassword", null);
+UserEntity = __decorate([
     (0, typeorm_1.Entity)('user')
-], AuthEntity);
-exports.AuthEntity = AuthEntity;
+], UserEntity);
+exports.UserEntity = UserEntity;
 ;
-//# sourceMappingURL=auth.entity.js.map
+//# sourceMappingURL=user.entity.js.map

@@ -29,32 +29,33 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    login(req) {
+    signin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.authService.login(req.user);
+            return this.authService.signin(req, res);
         });
     }
-    add(req) {
+    signup(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.authService.add(req.body);
+            return this.authService.signup(req.body);
         });
     }
 };
 __decorate([
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('/auth/login'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "login", null);
+], AuthController.prototype, "signin", null);
 __decorate([
     (0, common_1.Post)('/auth/create-user'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "add", null);
+], AuthController.prototype, "signup", null);
 AuthController = __decorate([
     (0, common_1.Controller)('api'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

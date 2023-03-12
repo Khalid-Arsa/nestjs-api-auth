@@ -1,9 +1,10 @@
 
-import { Controller, UseGuards, Post, Request, UsePipes, Body } from '@nestjs/common';
+import { Controller, UseGuards, Post, Req, UsePipes, Body, Res } from '@nestjs/common';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { AuthService } from '../auth/auth.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { CreateUserDto } from './dto';
+import { Request, Response } from 'express';
 
 @Controller('api')
 export class AuthController {
@@ -11,13 +12,13 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async signin(@Req() req: Request, @Res() res: Response) {
+    return this.authService.signin(req, res);
   }
 
   // @UsePipes(new ValidationPipe())
   @Post('/auth/create-user')
-  async add(@Request() req) {
-    return this.authService.add(req.body)
+  async signup(@Req() req: Request) {
+    return this.authService.signup(req.body)
   }
 }

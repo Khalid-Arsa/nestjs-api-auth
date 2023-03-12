@@ -22,6 +22,7 @@ import { Connection } from 'typeorm';
   ],
   controllers: [AppController],
 })
+
 export class AppModule {
   constructor(private readonly connection: Connection) {}
 }

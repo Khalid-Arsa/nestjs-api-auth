@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -20,20 +23,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
-const user_data_1 = require("../data/user.data");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("../lib/entities/user.entity");
+const typeorm_2 = require("typeorm");
 let UsersService = class UsersService {
-    constructor() {
-        this.users = user_data_1.userData;
+    constructor(userRepository) {
+        this.userRepository = userRepository;
     }
-    findOne(username) {
+    findByUsername(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.users.find(user => user.username === username);
+            return this.userRepository.findOneBy({ username });
+        });
+    }
+    getAllUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.find();
         });
     }
 };
 UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

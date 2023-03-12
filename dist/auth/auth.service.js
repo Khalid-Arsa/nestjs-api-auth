@@ -38,8 +38,9 @@ const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
-const auth_entity_1 = require("./auth.entity");
 const class_validator_1 = require("class-validator");
+const user_entity_1 = require("../lib/entities/user.entity");
+const error_1 = require("../shared/error");
 let AuthService = class AuthService {
     constructor(userRepository, userService, jwtService) {
         this.userRepository = userRepository;
@@ -48,7 +49,8 @@ let AuthService = class AuthService {
     }
     validateUser(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userService.findOne(username);
+            const user = yield this.userService.findByUsername(username);
+            console.log("user: ", user);
             if (user && user.password === password) {
                 const { password, username } = user, rest = __rest(user, ["password", "username"]);
                 return rest;
@@ -57,49 +59,56 @@ let AuthService = class AuthService {
             return null;
         });
     }
-    login(user) {
+    signin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const payload = {
-                name: user.name,
-                sub: user.id
-            };
-            return {
-                access_token: this.jwtService.sign(payload),
-            };
         });
     }
-    add(dto) {
+    signup(dto) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, username, email, password } = dto;
-            let newUser = new auth_entity_1.AuthEntity();
-            newUser.username = username;
-            newUser.email = email;
-            newUser.password = password;
-            newUser.name = name;
-            const errors = yield (0, class_validator_1.validate)(newUser);
-            if (errors.length > 0) {
-                const _errors = { username: 'Userinput is not valid.' };
-                throw new common_1.HttpException({ message: 'Input data validation failed', _errors }, common_1.HttpStatus.BAD_REQUEST);
+            try {
+                const { name, username, email, password } = dto;
+                const isUserExist = yield this.userRepository
+                    .createQueryBuilder('user')
+                    .where('user.username = :username', { username })
+                    .orWhere('user.email = :email', { email })
+                    .getOne();
+                if (isUserExist) {
+                    return new error_1.AppError('Username and email must be unique.', 400);
+                }
+                let newUser = new user_entity_1.UserEntity();
+                newUser.username = username;
+                newUser.email = email;
+                newUser.password = password;
+                newUser.name = name;
+                const error = yield (0, class_validator_1.validate)(newUser);
+                if (error.length > 0) {
+                    return new error_1.AppError('Input data validation failed', 400, error);
+                }
+                else {
+                    const savedUser = yield this.userRepository.save(newUser);
+                    return this.buildUserRO(savedUser);
+                }
             }
-            else {
-                const savedUser = yield this.userRepository.save(newUser);
-                return this.buildAuthRO(savedUser);
+            catch (error) {
+                console.log("Error: ", error);
             }
         });
     }
-    buildAuthRO(user) {
+    buildUserRO(user) {
         const userRO = {
             id: user.id,
             username: user.username,
             name: user.name,
             email: user.email,
         };
-        return { user: userRO };
+        return {
+            user: userRO
+        };
     }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_2.InjectRepository)(auth_entity_1.AuthEntity)),
+    __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         users_service_1.UsersService,
         jwt_1.JwtService])
