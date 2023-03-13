@@ -38,13 +38,13 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid name' }),
     (0, class_validator_1.IsString)({ message: "Name must be a string" }),
     __metadata("design:type", String)
-], UserEntity.prototype, "name", void 0);
+], UserEntity.prototype, "firstName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false, unique: true }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid username' }),
     (0, class_validator_1.IsString)({ message: "Username must be a string" }),
     __metadata("design:type", String)
-], UserEntity.prototype, "username", void 0);
+], UserEntity.prototype, "lastName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false, unique: true }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Please provide a valid email' }),

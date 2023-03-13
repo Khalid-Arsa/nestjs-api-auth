@@ -29,17 +29,25 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    signin(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.authService.signin(req, res);
-        });
-    }
     signup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.authService.signup(req, res);
         });
     }
+    signin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.authService.signin(req, res);
+        });
+    }
 };
+__decorate([
+    (0, common_1.Post)('/auth/create-user'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signup", null);
 __decorate([
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('/auth/signin'),
@@ -49,14 +57,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signin", null);
-__decorate([
-    (0, common_1.Post)('/auth/create-user'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "signup", null);
 AuthController = __decorate([
     (0, common_1.Controller)('api'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

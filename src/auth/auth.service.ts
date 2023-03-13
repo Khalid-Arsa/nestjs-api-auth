@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto';
 import { Repository } from 'typeorm';
@@ -7,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { UserEntity } from '../lib/entities/user.entity';
 import { AppError } from '../shared/error';
-import { RequestHandler } from '@nestjs/common/interfaces';
 import { Request, Response } from 'express';
 
 @Injectable()
@@ -15,25 +13,30 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    private userService: UsersService,
     private jwtService: JwtService
   ) { }
 
   async signin(req: Request, res: Response) {
-    const { id, name, email }: any = req.user;
+    const { id, firstName, lastName, email }: any = req.user;
+    const token = this.jwtService.sign({
+      id, firstName, lastName, email
+    })
 
     return res.status(201).json({
-      access_token: this.jwtService.sign({name, id}),
-      name: name,
+      success: true,
+      message: 'Signin successful',
+      firstName: firstName,
+      lastName: lastName,
       email: email,
+      token,
     })
   }
 
   async signup(req: Request, res: Response) {
     try {
       const {
-        name,
-        username,
+        firstName,
+        lastName,
         email,
         password
       } = req.body
@@ -41,8 +44,7 @@ export class AuthService {
       // check uniqueness of username/email
       const isUserExist = await this.userRepository
         .createQueryBuilder('user')
-        .where('user.username = :username', { username })
-        .orWhere('user.email = :email', { email })
+        .where('user.email = :email', { email })
         .getOne()
 
       if (isUserExist) {
@@ -51,10 +53,10 @@ export class AuthService {
 
       // create new user
       let newUser: CreateUserDto = new UserEntity();
-      newUser.username = username;
+      newUser.firstName = firstName;
+      newUser.lastName = lastName;
       newUser.email = email;
       newUser.password = password;
-      newUser.name = name;
 
       const error = await validate(newUser);
 
@@ -72,8 +74,8 @@ export class AuthService {
   private buildUserRO(user: UserEntity, res: Response) {
     const userRO = {
       id: user.id,
-      username: user.username,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
     };
 

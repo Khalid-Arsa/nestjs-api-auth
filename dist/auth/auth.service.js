@@ -23,7 +23,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
@@ -31,38 +30,42 @@ const class_validator_1 = require("class-validator");
 const user_entity_1 = require("../lib/entities/user.entity");
 const error_1 = require("../shared/error");
 let AuthService = class AuthService {
-    constructor(userRepository, userService, jwtService) {
+    constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
-        this.userService = userService;
         this.jwtService = jwtService;
     }
     signin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, name, email } = req.user;
+            const { id, firstName, lastName, email } = req.user;
+            const token = this.jwtService.sign({
+                id, firstName, lastName, email
+            });
             return res.status(201).json({
-                access_token: this.jwtService.sign({ name, id }),
-                name: name,
+                success: true,
+                message: 'Signin successful',
+                firstName: firstName,
+                lastName: lastName,
                 email: email,
+                token,
             });
         });
     }
     signup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, username, email, password } = req.body;
+                const { firstName, lastName, email, password } = req.body;
                 const isUserExist = yield this.userRepository
                     .createQueryBuilder('user')
-                    .where('user.username = :username', { username })
-                    .orWhere('user.email = :email', { email })
+                    .where('user.email = :email', { email })
                     .getOne();
                 if (isUserExist) {
                     return new error_1.AppError('Username and email must be unique.', 400);
                 }
                 let newUser = new user_entity_1.UserEntity();
-                newUser.username = username;
+                newUser.firstName = firstName;
+                newUser.lastName = lastName;
                 newUser.email = email;
                 newUser.password = password;
-                newUser.name = name;
                 const error = yield (0, class_validator_1.validate)(newUser);
                 if (error.length > 0) {
                     return new error_1.AppError('Input data validation failed', 400, error);
@@ -80,8 +83,8 @@ let AuthService = class AuthService {
     buildUserRO(user, res) {
         const userRO = {
             id: user.id,
-            username: user.username,
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
             email: user.email,
         };
         return res.status(201).json({
@@ -95,7 +98,6 @@ AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
-        users_service_1.UsersService,
         jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;

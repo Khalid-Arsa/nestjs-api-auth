@@ -23,7 +23,7 @@ class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strate
     validate(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             return {
-                id: payload.sub,
+                id: payload.id,
                 name: payload.name
             };
         });

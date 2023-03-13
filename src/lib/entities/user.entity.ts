@@ -10,12 +10,12 @@ export class UserEntity {
   @Column({ nullable: false })
   @IsNotEmpty({message: 'Please provide a valid name'})
   @IsString({ message: "Name must be a string" })
-  name: string;
+  firstName: string;
 
   @Column({ nullable: false, unique: true })
   @IsNotEmpty({message: 'Please provide a valid username'})
   @IsString({ message: "Username must be a string" })
-  username: string;
+  lastName: string;
 
   @Column({ nullable: false, unique: true })
   @IsNotEmpty({message: 'Please provide a valid email'})

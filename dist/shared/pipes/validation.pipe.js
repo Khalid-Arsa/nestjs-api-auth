@@ -26,6 +26,7 @@ let ValidationPipe = class ValidationPipe {
             if (!value) {
                 throw new common_1.BadRequestException('No data submitted');
             }
+            console.log('Value: ', value);
             const { metatype } = metadata;
             if (!metatype || !this.toValidate(metatype)) {
                 return value;

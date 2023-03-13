@@ -11,6 +11,8 @@ export class ValidationPipe implements PipeTransform<any> {
       throw new BadRequestException('No data submitted');
     }
 
+    console.log('Value: ', value)
+
     const { metatype } = metadata;
     if (!metatype || !this.toValidate(metatype)) {
       return value;

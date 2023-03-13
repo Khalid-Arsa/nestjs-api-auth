@@ -34,18 +34,16 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_local_1 = require("passport-local");
 const users_service_1 = require("../users/users.service");
-const auth_service_1 = require("./auth.service");
 let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
-    constructor(authService, userService) {
+    constructor(userService) {
         super();
-        this.authService = authService;
         this.userService = userService;
     }
     validate(username) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userService.findByEmail(username);
             if (user) {
-                const { password, username } = user, rest = __rest(user, ["password", "username"]);
+                const { password } = user, rest = __rest(user, ["password"]);
                 return rest;
             }
             else {
@@ -56,8 +54,7 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
 };
 LocalStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService,
-        users_service_1.UsersService])
+    __metadata("design:paramtypes", [users_service_1.UsersService])
 ], LocalStrategy);
 exports.LocalStrategy = LocalStrategy;
 //# sourceMappingURL=local.strategy.js.map
