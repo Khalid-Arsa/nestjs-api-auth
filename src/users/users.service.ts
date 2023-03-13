@@ -10,8 +10,8 @@ export class UsersService {
     private readonly userRepository: Repository<UserEntity>
   ) {}
 
-  async findByUsername(username: string) {
-    return this.userRepository.findOneBy({ username })
+  async findByEmail(email: string) {
+    return this.userRepository.findOneBy({ email })
   }
 
   async getAllUser() {

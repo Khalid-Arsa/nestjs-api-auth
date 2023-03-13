@@ -43,8 +43,7 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
     }
     validate(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userService.findByUsername(username);
-            console.log("Login User: ", user);
+            const user = yield this.userService.findByEmail(username);
             if (user) {
                 const { password, username } = user, rest = __rest(user, ["password", "username"]);
                 return rest;

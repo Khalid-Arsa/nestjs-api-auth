@@ -15,7 +15,7 @@ import { UserEntity } from '../lib/entities/user.entity';
     PassportModule, 
     JwtModule.register({
       secret: 'SECRET', // put this value in env file to hide the jwt secret
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '10h' },
     }),
     TypeOrmModule.forFeature([UserEntity])
   ],

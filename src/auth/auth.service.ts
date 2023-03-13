@@ -19,40 +19,24 @@ export class AuthService {
     private jwtService: JwtService
   ) { }
 
-  async validateUser(
-    username: string,
-    password: string
-  ): Promise<any> {
-    const user = await this.userService.findByUsername(username);
-    console.log("user: ", user)
-
-    if (user && user.password === password) {
-      const { password, username, ...rest } = user;
-      return rest;
-    };
-
-    return null
-  }
-
   async signin(req: Request, res: Response) {
-    // const payload = { name: req.user.name, sub:  }
+    const { id, name, email }: any = req.user;
 
-    
-    // return {
-    //   access_token: this.jwtService.sign(payload),
-    //   name: name,
-    //   email: email,
-    // }
+    return res.status(201).json({
+      access_token: this.jwtService.sign({name, id}),
+      name: name,
+      email: email,
+    })
   }
 
-  async signup(dto: CreateUserDto) {
+  async signup(req: Request, res: Response) {
     try {
       const {
         name,
         username,
         email,
         password
-      } = dto
+      } = req.body
 
       // check uniqueness of username/email
       const isUserExist = await this.userRepository
@@ -78,14 +62,14 @@ export class AuthService {
         return new AppError('Input data validation failed', 400, error)
       } else {
         const savedUser = await this.userRepository.save(newUser);
-        return this.buildUserRO(savedUser);
+        return this.buildUserRO(savedUser, res);
       }
     } catch (error: any) {
       console.log("Error: ", error)
     }
   }
 
-  private buildUserRO(user: UserEntity) {
+  private buildUserRO(user: UserEntity, res: Response) {
     const userRO = {
       id: user.id,
       username: user.username,
@@ -93,8 +77,10 @@ export class AuthService {
       email: user.email,
     };
 
-    return {
-      user: userRO
-    };
+    return res.status(201).json({
+      user: userRO,
+      message: "Create user successfully",
+      success: true
+    })
   }
 }

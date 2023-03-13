@@ -20,17 +20,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -47,26 +36,20 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    validateUser(username, password) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userService.findByUsername(username);
-            console.log("user: ", user);
-            if (user && user.password === password) {
-                const { password, username } = user, rest = __rest(user, ["password", "username"]);
-                return rest;
-            }
-            ;
-            return null;
-        });
-    }
     signin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { id, name, email } = req.user;
+            return res.status(201).json({
+                access_token: this.jwtService.sign({ name, id }),
+                name: name,
+                email: email,
+            });
         });
     }
-    signup(dto) {
+    signup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, username, email, password } = dto;
+                const { name, username, email, password } = req.body;
                 const isUserExist = yield this.userRepository
                     .createQueryBuilder('user')
                     .where('user.username = :username', { username })
@@ -86,7 +69,7 @@ let AuthService = class AuthService {
                 }
                 else {
                     const savedUser = yield this.userRepository.save(newUser);
-                    return this.buildUserRO(savedUser);
+                    return this.buildUserRO(savedUser, res);
                 }
             }
             catch (error) {
@@ -94,16 +77,18 @@ let AuthService = class AuthService {
             }
         });
     }
-    buildUserRO(user) {
+    buildUserRO(user, res) {
         const userRO = {
             id: user.id,
             username: user.username,
             name: user.name,
             email: user.email,
         };
-        return {
-            user: userRO
-        };
+        return res.status(201).json({
+            user: userRO,
+            message: "Create user successfully",
+            success: true
+        });
     }
 };
 AuthService = __decorate([

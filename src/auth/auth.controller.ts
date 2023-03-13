@@ -11,14 +11,14 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
-  @Post('/auth/login')
+  @Post('/auth/signin')
   async signin(@Req() req: Request, @Res() res: Response) {
     return this.authService.signin(req, res);
   }
 
   // @UsePipes(new ValidationPipe())
   @Post('/auth/create-user')
-  async signup(@Req() req: Request) {
-    return this.authService.signup(req.body)
+  async signup(@Req() req: Request, @Res() res: Response) {
+    return this.authService.signup(req, res)
   }
 }

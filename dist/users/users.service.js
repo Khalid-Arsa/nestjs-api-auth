@@ -30,9 +30,9 @@ let UsersService = class UsersService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    findByUsername(username) {
+    findByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.findOneBy({ username });
+            return this.userRepository.findOneBy({ email });
         });
     }
     getAllUser() {
